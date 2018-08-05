@@ -6,11 +6,13 @@ public class Vetor {
 	private int totalDeAlunos = 0;
 
 	public void adiciona(Aluno aluno) {
-		// implementacao
+		this.alunos[totalDeAlunos] = aluno; 
+		totalDeAlunos++;
 	}
 
 	public void adiciona(int posicao, Aluno aluno) {
-		// implementacao
+		this.alunos[posicao] = aluno;
+		totalDeAlunos++;
 	}
 
 	public Aluno pega(int posicao) {
