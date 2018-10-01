@@ -7,53 +7,88 @@ import java.util.List;
 
 public class ConjuntoEspalhamento {
 	
-	private ArrayList<LinkedList<String>>tabelaEspalhamento = 
-	new ArrayList<LinkedList<String>>();
+	private ArrayList<LinkedList<Object>>tabelaEspalhamento = 
+	new ArrayList<LinkedList<Object>>();
 	
 	private int totalDeElementos = 0;
 	public ConjuntoEspalhamento()	{
 		
 		for(int i=0; i<26;i++) {
-			LinkedList<String> lista =new LinkedList<String>();
+			LinkedList<Object> lista =new LinkedList<Object>();
 			tabelaEspalhamento.add(lista);
 		}
 		
 	}
-	public int funcaoEspalhamento(String palavra) {
-		return palavra.toLowerCase().charAt(0) % 26;
+	
+	
+	
+	public int calculaIndiceDeTabela(Object palavra) {
+		int codigoEspalhamento = palavra.hashCode();
+				codigoEspalhamento = Math.abs(codigoEspalhamento);
+		return codigoEspalhamento % this.tabelaEspalhamento.size();
 	}
+	private void vereficaCarga() {
+		int capacidade = this.tabelaEspalhamento.size();
+		double carga = this.tamanho()/capacidade;
+		
+		if (carga>0.75) {
+			this.redimensionaTabela(capacidade*2);
 			
-	public void adiciona(String palavra) {
+		}else if(carga<0.25) {
+			this.redimensionaTabela(Math.max(capacidade/2, 10));
+		}
+	}
+	
+	
+	private void redimensionaTabela(int novaCapacidade) {
+		List<Object> backub = this.pegaTodasPalavras();
+		this.tabelaEspalhamento.clear();
+		
+		for(int i=0; i< novaCapacidade;i++) {
+			LinkedList<Object> lista =new LinkedList<Object>();
+			tabelaEspalhamento.add(lista);
+		}
+		for(Object palavra :backub) {
+			this.adiciona(palavra);
+			
+		}
+		
+		
+	}
+	
+	
+	
+	public void adiciona(Object palavra) { 
 		if(!this.contem(palavra)) {
-			int indice = this.funcaoEspalhamento(palavra);
-			LinkedList<String> lista = this.tabelaEspalhamento.get(indice);
+			int indice = this.calculaIndiceDeTabela(palavra);
+			LinkedList<Object> lista = this.tabelaEspalhamento.get(indice);
 			lista.add(palavra);
 			totalDeElementos++;
 		}
 	}
 		
 		
-	public void remove(String palavra) {
+	public void remove(Object palavra) {
 		
 		if(this.contem(palavra)) {
-			int indice = this.funcaoEspalhamento(palavra);
-			LinkedList<String> lista = this.tabelaEspalhamento.get(indice);
+			int indice = this.calculaIndiceDeTabela(palavra);
+			LinkedList<Object> lista = this.tabelaEspalhamento.get(indice);
 			lista.remove(palavra);
 			totalDeElementos--;
 		}
 	}
 	
-	public boolean contem(String palavra) {
-		int indice = this.funcaoEspalhamento(palavra);
-		LinkedList<String> lista = this.tabelaEspalhamento.get(indice);
+	public boolean contem(Object palavra) {
+		int indice = this.calculaIndiceDeTabela(palavra);
+		LinkedList<Object> lista = this.tabelaEspalhamento.get(indice);
 		
 		return lista.contains(palavra);
 	}
 	
-	public List<String> pegaTodasPalavras(){
-		List <String> L = new LinkedList<String>() ;
+	public List<Object> pegaTodasPalavras(){
+		List <Object> L = new LinkedList<Object>() ;
 		for(int i = 0;i<=25;i++) {
-			LinkedList<String> lista = this.tabelaEspalhamento.get(i);
+			LinkedList<Object> lista = this.tabelaEspalhamento.get(i);
 			L.addAll(lista);
 			
 		}
@@ -70,7 +105,7 @@ public class ConjuntoEspalhamento {
 		StringBuilder b = new StringBuilder();
 		
 		for(int i = 0; i< tabelaEspalhamento.size(); i++){
-			LinkedList<String> lista = this.tabelaEspalhamento.get(i);
+			LinkedList<Object> lista = this.tabelaEspalhamento.get(i);
 			
 			if(!lista.isEmpty()) {
 				String palavra = lista.toString();
